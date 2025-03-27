@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Product, PricingRule } from '@/types/supabase';
 import { priceAdjustmentReasons } from '../data/mockData';
@@ -7,12 +8,14 @@ import { toast } from 'sonner';
 
 interface PricingRulesProps {
   product: Product;
-  onApplyRules: (productId: number, rules: string[], newPrice: number) => void;
+  onApplyRules: (productId: string, rules: string[], newPrice: number) => void;
 }
 
 const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) => {
   const [selectedRules, setSelectedRules] = useState<string[]>([]);
-  const [customPrice, setCustomPrice] = useState<string>(product.current_price.toString());
+  const [customPrice, setCustomPrice] = useState<string>(
+    product?.current_price ? product.current_price.toString() : '0'
+  );
   const [isApplying, setIsApplying] = useState(false);
   
   const handleRuleToggle = (ruleId: string) => {
@@ -24,6 +27,8 @@ const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) =>
   };
   
   const handleApplyRules = async () => {
+    if (!product) return;
+    
     setIsApplying(true);
     
     try {
@@ -34,7 +39,7 @@ const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) =>
       );
       
       if (success) {
-        onApplyRules(Number(product.id), selectedRules, parseFloat(customPrice));
+        onApplyRules(product.id, selectedRules, parseFloat(customPrice));
       }
     } catch (error) {
       console.error('Error applying pricing rules:', error);
@@ -43,6 +48,12 @@ const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) =>
       setIsApplying(false);
     }
   };
+
+  if (!product) {
+    return <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+      No product selected
+    </div>;
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 animate-fade-in">
