@@ -124,7 +124,7 @@ const ProductScraper: React.FC = () => {
             variant="outlined"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            placeholder="https://www.amazon.in/..."
+            placeholder="Enter product URL from Amazon, Flipkart, Myntra, AJIO, Pantaloons, or Nike India"
             margin="normal"
             required
             sx={{ mb: 3 }}
@@ -159,96 +159,100 @@ const ProductScraper: React.FC = () => {
             </StyledButton>
           </Box>
         </form>
+        
+        <Snackbar 
+          open={!!error} 
+          autoHideDuration={6000} 
+          onClose={() => setError(null)}
+        >
+          <Alert 
+            onClose={() => setError(null)} 
+            severity="error" 
+            sx={{ width: '100%' }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
 
+        <Snackbar 
+          open={success} 
+          autoHideDuration={6000} 
+          onClose={() => setSuccess(false)}
+        >
+          <Alert 
+            onClose={() => setSuccess(false)} 
+            severity="success" 
+            sx={{ width: '100%' }}
+          >
+            Product scraped successfully!
+          </Alert>
+        </Snackbar>
+
+        {/* Product Display Section */}
         {productData && (
-          <Box sx={{ 
-            mt: 4,
-            animation: 'fadeIn 0.6s ease-out',
-            background: 'rgba(255, 255, 255, 0.8)',
-            borderRadius: '12px',
-            padding: '20px',
-            backdropFilter: 'blur(5px)',
-          }}>
-            <Typography variant="h6" gutterBottom sx={{ color: '#4f46e5' }}>
-              Product Details
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              <strong>Name:</strong> {productData["Product Name"]}
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              <strong>Price:</strong> {productData["Price"]}
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              <strong>Stock:</strong> {productData["Stock"]}
-            </Typography>
-            {productData["Description"] && (
-              <Typography variant="body1" gutterBottom>
-                <strong>Description:</strong> {productData["Description"]}
+          <Box sx={{ mt: 4, animation: 'fadeIn 0.8s ease-out' }}>
+            <Paper 
+              elevation={2}
+              sx={{
+                p: 3,
+                borderRadius: '16px',
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(10px)',
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                {productData["Product Name"]}
               </Typography>
-            )}
-            {productData["Rating"] && (
+              
+              {productData["Image URL"] && (
+                <Box
+                  component="img"
+                  src={productData["Image URL"]}
+                  alt={productData["Product Name"]}
+                  sx={{
+                    width: '100%',
+                    maxHeight: '300px',
+                    objectFit: 'contain',
+                    borderRadius: '8px',
+                    mb: 2
+                  }}
+                />
+              )}
+              
               <Typography variant="body1" gutterBottom>
-                <strong>Rating:</strong> {productData["Rating"]}
+                <strong>Price:</strong> ₹{productData["Price"]}
               </Typography>
-            )}
-            {productData["Reviews Count"] && (
+              
               <Typography variant="body1" gutterBottom>
-                <strong>Reviews:</strong> {productData["Reviews Count"]}
+                <strong>Stock:</strong> {productData["Stock"]}
               </Typography>
-            )}
+              
+              {productData["Description"] && (
+                <Typography variant="body2" color="text.secondary" paragraph>
+                  {productData["Description"]}
+                </Typography>
+              )}
+              
+              {productData["Features"] && productData["Features"].length > 0 && (
+                <>
+                  <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
+                    <strong>Features:</strong>
+                  </Typography>
+                  <ul>
+                    {productData["Features"].map((feature: string, index: number) => (
+                      <li key={index}>
+                        <Typography variant="body2" color="text.secondary">
+                          {feature}
+                        </Typography>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </Paper>
           </Box>
         )}
       </StyledPaper>
-
-      <Snackbar 
-        open={!!error} 
-        autoHideDuration={6000} 
-        onClose={() => setError(null)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert 
-          onClose={() => setError(null)} 
-          severity="error" 
-          sx={{ 
-            width: '100%',
-            background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-            color: 'white',
-            '& .MuiAlert-icon': {
-              color: 'white'
-            },
-            animation: 'slideIn 0.4s ease-out',
-            backdropFilter: 'blur(5px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-          }}
-        >
-          {error}
-        </Alert>
-      </Snackbar>
-
-      <Snackbar 
-        open={success} 
-        autoHideDuration={6000} 
-        onClose={() => setSuccess(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert 
-          onClose={() => setSuccess(false)} 
-          severity="success" 
-          sx={{ 
-            width: '100%',
-            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-            color: 'white',
-            '& .MuiAlert-icon': {
-              color: 'white'
-            },
-            animation: 'slideIn 0.4s ease-out',
-            backdropFilter: 'blur(5px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-          }}
-        >
-          Product scraped successfully!
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

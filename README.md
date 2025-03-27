@@ -20,6 +20,10 @@
 - Identify competitors’ pricing trends to adjust prices strategically.
 
 
+## Project Video
+[Watch our project demo video](https://drive.google.com/file/d/1pB8Hqqr7AFGWBhHRMgEX8jP37h-VYc72/view?usp=sharing)
+
+
 # Price Adaptive Genius
 
 A smart price tracking and comparison system that helps users find the best deals across multiple e-commerce platforms.

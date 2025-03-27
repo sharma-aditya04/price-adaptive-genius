@@ -34,9 +34,12 @@ export const scrapeProduct = async (url: string): Promise<ProductInfo> => {
     } else if (url.includes('pantaloons.com')) {
       console.log('Using Pantaloons scraper'); // Debug log
       endpoint = 'http://localhost:5004/scrape';
+    } else if (url.includes('nike.com/in') || url.includes('nike.in')) {
+      console.log('Using Nike scraper'); // Debug log
+      endpoint = 'http://localhost:5005/scrape';
     } else {
       console.log('No matching scraper found for URL'); // Debug log
-      throw new Error('Unsupported e-commerce website. Please use a valid URL from Amazon, Flipkart, Myntra, AJIO, or Pantaloons.');
+      throw new Error('Unsupported website. Please use a valid URL from Amazon, Flipkart, Myntra, AJIO, Pantaloons, or Nike India.');
     }
 
     console.log('Using endpoint:', endpoint); // Debug log
@@ -57,7 +60,7 @@ export const scrapeProduct = async (url: string): Promise<ProductInfo> => {
 
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error details:', {
       message: error.message,
       stack: error.stack,
