@@ -6,37 +6,52 @@ import ProductCard from '../components/ProductCard';
 import PriceComparison from '../components/PriceComparison';
 import PricingRules from '../components/PricingRules';
 import PriceChart from '../components/PriceChart';
-import { products, categories, Product } from '../data/mockData';
+import { Product as SupabaseProduct } from '../types/supabase';
+import { products as mockProducts, categories, Product as MockProduct } from '../data/mockData';
 import { toast } from "sonner";
+
+// Helper function to convert MockProduct to SupabaseProduct
+const convertMockToSupabaseProduct = (mockProduct: MockProduct): SupabaseProduct => {
+  return {
+    id: mockProduct.id.toString(),
+    name: mockProduct.name,
+    current_price: mockProduct.currentPrice,
+    previous_price: mockProduct.previousPrice,
+    suggested_price: mockProduct.suggestedPrice,
+    category: mockProduct.category,
+    image_url: mockProduct.image,
+    in_stock: mockProduct.inStock
+  };
+};
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [localProducts, setLocalProducts] = useState<Product[]>(products);
+  const [selectedProduct, setSelectedProduct] = useState<SupabaseProduct | null>(null);
+  const [localProducts, setLocalProducts] = useState<MockProduct[]>(mockProducts);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const filteredProducts = selectedCategory === 'All'
     ? localProducts
     : localProducts.filter(product => product.category === selectedCategory);
 
-  const handleProductSelect = (product: Product) => {
-    setSelectedProduct(product);
+  const handleProductSelect = (product: MockProduct) => {
+    setSelectedProduct(convertMockToSupabaseProduct(product));
     // Scroll to top on mobile when product is selected
     if (window.innerWidth < 768) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const handleApplyRules = (productId: number, rules: string[], newPrice: number) => {
+  const handleApplyRules = (productId: string, rules: string[], newPrice: number) => {
     // Update the product price
     const updatedProducts = localProducts.map(product => {
-      if (product.id === productId) {
+      if (product.id.toString() === productId) {
         const updatedProduct = {
           ...product,
           previousPrice: product.currentPrice,
           currentPrice: newPrice
         };
-        setSelectedProduct(updatedProduct);
+        setSelectedProduct(convertMockToSupabaseProduct(updatedProduct));
         return updatedProduct;
       }
       return product;
