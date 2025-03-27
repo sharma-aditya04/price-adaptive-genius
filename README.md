@@ -56,7 +56,6 @@ A smart price tracking and comparison system that helps users find the best deal
 - React.js
 - TypeScript
 - Material-UI
-- Redux for state management
 - Axios for API calls
 
 ### Backend
@@ -64,7 +63,6 @@ A smart price tracking and comparison system that helps users find the best deal
 - Flask
 - BeautifulSoup4
 - Requests
-- SQLAlchemy
 - Flask-CORS
 
 
