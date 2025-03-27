@@ -1,7 +1,9 @@
-
 import React, { useState } from 'react';
-import { Product, priceAdjustmentReasons } from '../data/mockData';
+import { Product, PricingRule } from '@/types/supabase';
+import { priceAdjustmentReasons } from '../data/mockData';
 import { Check } from 'lucide-react';
+import { applyPricingRule } from '@/services/productService';
+import { toast } from 'sonner';
 
 interface PricingRulesProps {
   product: Product;
@@ -10,7 +12,8 @@ interface PricingRulesProps {
 
 const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) => {
   const [selectedRules, setSelectedRules] = useState<string[]>([]);
-  const [customPrice, setCustomPrice] = useState<string>(product.currentPrice.toFixed(2));
+  const [customPrice, setCustomPrice] = useState<string>(product.current_price.toString());
+  const [isApplying, setIsApplying] = useState(false);
   
   const handleRuleToggle = (ruleId: string) => {
     setSelectedRules(prev => 
@@ -20,8 +23,25 @@ const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) =>
     );
   };
   
-  const handleApplyRules = () => {
-    onApplyRules(product.id, selectedRules, parseFloat(customPrice));
+  const handleApplyRules = async () => {
+    setIsApplying(true);
+    
+    try {
+      const success = await applyPricingRule(
+        product.id,
+        selectedRules.length > 0 ? selectedRules.join(',') : 'manual_price_change',
+        parseFloat(customPrice)
+      );
+      
+      if (success) {
+        onApplyRules(Number(product.id), selectedRules, parseFloat(customPrice));
+      }
+    } catch (error) {
+      console.error('Error applying pricing rules:', error);
+      toast.error('Failed to apply pricing rules');
+    } finally {
+      setIsApplying(false);
+    }
   };
 
   return (
@@ -71,14 +91,18 @@ const PricingRules: React.FC<PricingRulesProps> = ({ product, onApplyRules }) =>
       <div>
         <button
           onClick={handleApplyRules}
+          disabled={
+            (selectedRules.length === 0 && 
+             parseFloat(customPrice) === product.current_price) || 
+            isApplying
+          }
           className={`w-full px-4 py-2 rounded-md text-white font-medium transition-colors ${
-            selectedRules.length > 0 || parseFloat(customPrice) !== product.currentPrice
+            (selectedRules.length > 0 || parseFloat(customPrice) !== product.current_price) && !isApplying
               ? 'bg-blue-600 hover:bg-blue-700' 
               : 'bg-gray-300 cursor-not-allowed'
           }`}
-          disabled={selectedRules.length === 0 && parseFloat(customPrice) === product.currentPrice}
         >
-          Apply Pricing Rules
+          {isApplying ? 'Applying...' : 'Apply Pricing Rules'}
         </button>
       </div>
     </div>

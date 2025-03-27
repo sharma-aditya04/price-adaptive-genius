@@ -9,7 +9,138 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      competitor_prices: {
+        Row: {
+          competitor_name: string
+          created_at: string | null
+          id: string
+          in_stock: boolean | null
+          price: number
+          product_id: string | null
+        }
+        Insert: {
+          competitor_name: string
+          created_at?: string | null
+          id?: string
+          in_stock?: boolean | null
+          price: number
+          product_id?: string | null
+        }
+        Update: {
+          competitor_name?: string
+          created_at?: string | null
+          id?: string
+          in_stock?: boolean | null
+          price?: number
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitor_prices_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      price_history: {
+        Row: {
+          date: string | null
+          id: string
+          price: number
+          product_id: string | null
+        }
+        Insert: {
+          date?: string | null
+          id?: string
+          price: number
+          product_id?: string | null
+        }
+        Update: {
+          date?: string | null
+          id?: string
+          price?: number
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pricing_rules: {
+        Row: {
+          applied_at: string | null
+          id: string
+          product_id: string | null
+          rule_id: string
+        }
+        Insert: {
+          applied_at?: string | null
+          id?: string
+          product_id?: string | null
+          rule_id: string
+        }
+        Update: {
+          applied_at?: string | null
+          id?: string
+          product_id?: string | null
+          rule_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_rules_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          current_price: number
+          id: string
+          image_url: string | null
+          in_stock: number | null
+          name: string
+          previous_price: number | null
+          suggested_price: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          current_price: number
+          id?: string
+          image_url?: string | null
+          in_stock?: number | null
+          name: string
+          previous_price?: number | null
+          suggested_price?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          current_price?: number
+          id?: string
+          image_url?: string | null
+          in_stock?: number | null
+          name?: string
+          previous_price?: number | null
+          suggested_price?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
