@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import DashboardHeader from '../components/DashboardHeader';
@@ -6,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import PriceComparison from '../components/PriceComparison';
 import PricingRules from '../components/PricingRules';
 import PriceChart from '../components/PriceChart';
+import ProductScraper from '../components/ProductScraper';
 import { Product as SupabaseProduct } from '../types/supabase';
 import { products as mockProducts, categories, Product as MockProduct } from '../data/mockData';
 import { toast } from "sonner";
@@ -153,11 +153,14 @@ const Index = () => {
                     />
                   </>
                 ) : (
-                  <div className="bg-white p-8 rounded-lg border border-gray-200 text-center">
-                    <p className="text-gray-600 mb-2">Select a product to view details</p>
-                    <p className="text-gray-500 text-sm">
-                      You'll be able to compare prices and apply custom pricing rules
-                    </p>
+                  <div className="space-y-6">
+                    <div className="bg-white p-8 rounded-lg border border-gray-200 text-center">
+                      <p className="text-gray-600 mb-2">Select a product to view details</p>
+                      <p className="text-gray-500 text-sm">
+                        You'll be able to compare prices and apply custom pricing rules
+                      </p>
+                    </div>
+                    <ProductScraper />
                   </div>
                 )}
               </div>
