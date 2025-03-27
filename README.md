@@ -1,55 +1,28 @@
-# Price Adaptive Genius
-
-A smart price tracking and comparison system that helps users find the best deals across multiple e-commerce platforms.
+# Problem Statement - 2
+## AI-Powered Dynamic Pricing System
 
 ## Team Status200
 
-### Team Members
+## Description
+### E-commerce platforms need to optimize pricing strategies tso remain competitive and maximize revenue. Traditional pricing models rely on static pricing, which fails to adapt to market fluctuations. A dynamic pricing system should analyse real-time demand, competitor pricing, and other factors to automatically adjust product prices, ensuring profitability and competitiveness.
+## Key Requirements
+- ## Real-Time Market Analysis
+- Track competitor prices, stock availability, and demand trends.
+- Use web scraping and APIs to gather live pricing data.
+- ## AI/ML-Based Pricing Optimization
+- Train models on historical sales data to identify optimal pricing strategies.
+- Adjust prices dynamically based on demand, festive seasons, and customer behaviour.
+- ## Custom Pricing Rules & Strategies
+- Set predefined rules for discounts, seasonal pricing, and stock clearance.
+- Implement surge pricing during high-demand periods.
+- ## User & Competitor Insights
+- Analyse customer behaviour to offer personalized price recommendations.
+- Identify competitors’ pricing trends to adjust prices strategically.
 
-1. **Sumukh Bhende**
-   - Contact: +91 7030421835
-   - Email: sumukhsbhende@gmail.com
-   - Role: Frontend Developer & Web Scraping Collector
-   - Contribution: Developed the React frontend, implemented responsive design, created user interface components, and Scraped websites to collect live competitor market data.
 
-2. **Aditya Sharma**
-   - Contact: +91 8421057928
-   - Email: adityaks@gmail.com
-   - Role: Model Training & Database Specialist
-   - Contribution: Built the Flask backend, implemented web scraping functionality, designed database schema, and handled API integrations.
+# Price Adaptive Genius
 
-3. **Sandhya Mourya**
-   - Contact: +91 8459291370
-   - Email: mouryasandhya25@gmail.com
-   - Role: Dataset Collection , Preprocessing and Presentation
-   - Contribution: Set up project infrastructure, collected dataset for model to train on and preparing for presentation
-
-## Project Structure
-
-```
-price-adaptive-genius/
-├── frontend/                 # React frontend application
-│   ├── src/
-│   │   ├── components/      # Reusable React components
-│   │   ├── pages/          # Page components
-│   │   ├── services/       # API services
-│   │   ├── styles/         # CSS and styling files
-│   │   └── App.tsx         # Main application component
-│   ├── public/             # Static assets
-│   └── package.json        # Frontend dependencies
-│
-├── pybar/                   # Python backend services
-│   ├── app.py              # Main Flask application
-│   ├── amazon_scraper.py   # Amazon product scraper
-│   ├── flipkart_scraper.py # Flipkart product scraper
-│   ├── myntra_scraper.py   # Myntra product scraper
-│   └── ajio_scraper.py     # AJIO product scraper
-│
-├── database/               # Database related files
-│   └── schema.sql         # Database schema
-│
-└── README.md             # Project documentation
-```
+A smart price tracking and comparison system that helps users find the best deals across multiple e-commerce platforms.
 
 ## Problem Solving Approach
 
@@ -94,9 +67,7 @@ price-adaptive-genius/
 - SQLAlchemy
 - Flask-CORS
 
-### Database
-- PostgreSQL
-- Redis (for caching)
+
 
 ### DevOps
 - GitHub Actions
@@ -174,3 +145,51 @@ flask db upgrade
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+
+### Team Members
+
+1. **Sumukh Bhende**
+   - Contact: +91 7030421835
+   - Email: sumukhsbhende@gmail.com
+   - Role: Frontend Developer & Web Scraping Collector
+   - Contribution: Developed the React frontend, implemented responsive design, created user interface components, and Scraped websites to collect live competitor market data.
+
+2. **Aditya Sharma**
+   - Contact: +91 8421057928
+   - Email: adityaks@gmail.com
+   - Role: Model Training & Database Specialist
+   - Contribution: Built the Flask backend, implemented web scraping functionality, designed database schema, and handled API integrations.
+
+3. **Sandhya Mourya**
+   - Contact: +91 8459291370
+   - Email: mouryasandhya25@gmail.com
+   - Role: Dataset Collection , Preprocessing and Presentation
+   - Contribution: Set up project infrastructure, collected dataset for model to train on and preparing for presentation
+
+## Project Structure
+
+```
+price-adaptive-genius/
+├── frontend/                 # React frontend application
+│   ├── src/
+│   │   ├── components/      # Reusable React components
+│   │   ├── pages/          # Page components
+│   │   ├── services/       # API services
+│   │   ├── styles/         # CSS and styling files
+│   │   └── App.tsx         # Main application component
+│   ├── public/             # Static assets
+│   └── package.json        # Frontend dependencies
+│
+├── pybar/                   # Python backend services
+│   ├── app.py              # Main Flask application
+│   ├── amazon_scraper.py   # Amazon product scraper
+│   ├── flipkart_scraper.py # Flipkart product scraper
+│   ├── myntra_scraper.py   # Myntra product scraper
+│   └── ajio_scraper.py     # AJIO product scraper
+│
+├── database/               # Database related files
+│   └── schema.sql         # Database schema
+│
+└── README.md             # Project documentation
+```
