@@ -106,20 +106,16 @@ def scrape_ajio_product(url):
     # Extract product name - AJIO specific selectors
     product_name = None
     name_selectors = [
-        "h1.product-name",
-        "h1.product-title",
-        "div.product-name",
-        "div.product-title",
+        "prod-name",
+        "h1.prod-name",
+        "div.prod-name",
+        "span.prod-name",
         "h1[class*='product-name']",
         "h1[class*='product-title']",
         "div[class*='product-name']",
         "div[class*='product-title']",
         "span[class*='product-name']",
-        "span[class*='product-title']",
-        "h1[class*='pdp-name']",
-        "h1[class*='pdp-title']",
-        "div[class*='pdp-name']",
-        "div[class*='pdp-title']"
+        "span[class*='product-title']"
     ]
     
     for selector in name_selectors:
@@ -131,21 +127,15 @@ def scrape_ajio_product(url):
     # Extract price - AJIO specific selectors
     price = None
     price_selectors = [
-        "span.price",
-        "div.price",
-        "span.product-price",
-        "div.product-price",
-        "span.price strong",
+        "prod-price-section",
+        "div.prod-price-section",
+        "span.prod-price-section",
         "div[class*='price']",
         "span[class*='price']",
         "div[class*='product-price']",
         "span[class*='product-price']",
         "div[class*='selling-price']",
-        "span[class*='selling-price']",
-        "div[class*='pdp-price']",
-        "span[class*='pdp-price']",
-        "div[class*='price-section']",
-        "span[class*='price-section']"
+        "span[class*='selling-price']"
     ]
     
     for selector in price_selectors:
@@ -157,19 +147,14 @@ def scrape_ajio_product(url):
     # Extract stock availability - AJIO specific selectors
     stock = None
     stock_selectors = [
-        "div.size-info",
-        "div.size-description",
-        "div.size-chart",
-        "div.size-chart-info",
-        "div.size-chart-description",
-        "div[class*='size-info']",
-        "div[class*='size-description']",
-        "div[class*='stock-info']",
+        "prod-stock-status",
+        "div.prod-stock-status",
+        "span.prod-stock-status",
+        "div[class*='stock']",
         "div[class*='availability']",
         "div[class*='delivery']",
         "div[class*='shipping']",
-        "div[class*='inventory']",
-        "div[class*='stock-status']"
+        "div[class*='inventory']"
     ]
     
     for selector in stock_selectors:
@@ -181,20 +166,14 @@ def scrape_ajio_product(url):
     # Extract product image - AJIO specific selectors
     image_url = None
     image_selectors = [
-        "img.product-image",
-        "img.product-img",
-        "div.product-image img",
-        "div.product-img img",
-        "div.image-container img",
+        "rilrtl-lazy-img img-alignment zoom-cursor rilrtl-lazy-img-loaded",
+        "img.rilrtl-lazy-img.img-alignment.zoom-cursor.rilrtl-lazy-img-loaded",
+        "div.rilrtl-lazy-img.img-alignment.zoom-cursor.rilrtl-lazy-img-loaded img",
         "img[class*='product-image']",
         "img[class*='product-img']",
         "img[class*='main-image']",
         "img[class*='primary-image']",
-        "img[class*='gallery-image']",
-        "img[class*='pdp-image']",
-        "img[class*='pdp-product-image']",
-        "img[class*='zoom-image']",
-        "img[class*='zoom-product-image']"
+        "img[class*='gallery-image']"
     ]
     
     for selector in image_selectors:
@@ -243,3 +222,11 @@ def scrape():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5003) 
+
+
+
+# name selector class="prod-name"
+# price selector class="prod-price-section"
+# stock selector class="prod-stock-status"
+# image selector class="rilrtl-lazy-img img-alignment zoom-cursor rilrtl-lazy-img-loaded"
+

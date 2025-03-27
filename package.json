@@ -84,5 +84,17 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"
-  }
+  },
+  "description": "- ## Real-Time Market Analysis\r - Track competitor prices, stock availability, and demand trends.\r - Use web scraping and APIs to gather live pricing data.\r - ## AI/ML-Based Pricing Optimization\r - Train models on historical sales data to identify optimal pricing strategies.\r - Adjust prices dynamically based on demand, festive seasons, and customer behaviour.\r - ## Custom Pricing Rules & Strategies\r - Set predefined rules for discounts, seasonal pricing, and stock clearance.\r - Implement surge pricing during high-demand periods.\r - ## User & Competitor Insights\r - Analyse customer behaviour to offer personalized price recommendations.\r - Identify competitors’ pricing trends to adjust prices strategically.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sharma-aditya04/price-adaptive-genius.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sharma-aditya04/price-adaptive-genius/issues"
+  },
+  "homepage": "https://github.com/sharma-aditya04/price-adaptive-genius#readme"
 }

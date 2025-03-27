@@ -21,10 +21,17 @@ CORS(app)
 CORS(app, resources={
     r"/*": {
         "origins": ["*"],  # Allow all origins
-        "methods": ["POST", "OPTIONS"],
+        "methods": ["POST", "GET", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
 })
+
+# Load dummy products
+try:
+    with open('dummy_products.json', 'r') as f:
+        dummy_products = json.load(f)
+except FileNotFoundError:
+    dummy_products = []
 
 def clean_price(price_text):
     if not price_text:
@@ -68,7 +75,7 @@ def get_amazon_cookies(session):
         headers = get_random_headers()
         
         # Add random delay before request
-        time.sleep(random.uniform(1, 2))  # Reduced delay for serverless
+        time.sleep(random.uniform(0.5, 1))  # Reduced delay for serverless
         
         response = session.get(homepage_url, headers=headers)
         response.raise_for_status()
@@ -95,15 +102,11 @@ def get_amazon_cookies(session):
         return None
 
 def scrape_amazon_product(url):
-    max_retries = 2  # Reduced retries for serverless
+    max_retries = 1  # Reduced retries for serverless
     retry_count = 0
     
     while retry_count < max_retries:
         try:
-            # Add random delay between retries
-            if retry_count > 0:
-                time.sleep(random.uniform(2, 4))  # Reduced delay for serverless
-            
             session = requests.Session()
             
             # Get cookies first
@@ -113,9 +116,6 @@ def scrape_amazon_product(url):
             
             # Update session cookies
             session.cookies.update(cookies)
-            
-            # Add random delay before product request
-            time.sleep(random.uniform(1, 2))  # Reduced delay for serverless
             
             # Clean the URL by removing tracking parameters
             clean_url = url.split('/ref=')[0].split('?')[0]
@@ -134,10 +134,7 @@ def scrape_amazon_product(url):
                 "security check",
                 "captcha"
             ]):
-                retry_count += 1
-                if retry_count == max_retries:
-                    return {"error": "Amazon's anti-bot protection is active. Please try again later."}
-                continue
+                return {"error": "Amazon's anti-bot protection is active. Please try again later."}
             
             soup = BeautifulSoup(response.content, 'html.parser')
             
@@ -227,122 +224,18 @@ def scrape_amazon_product(url):
                         image_url = 'https:' + image_url
                     break
             
-            # Extract additional product details
-            details = {}
-            
-            # Extract product description
-            description = None
-            desc_selectors = [
-                "div#productDescription",
-                "div#productDescription p",
-                "div#productDescription span",
-                "div#productDescription div",
-                "div#productDescription ul",
-                "div#productDescription li"
-            ]
-            
-            for selector in desc_selectors:
-                desc_elem = soup.select_one(selector)
-                if desc_elem:
-                    description = desc_elem.get_text(strip=True)
-                    break
-            
-            # Extract product features
-            features = []
-            feature_selectors = [
-                "div#feature-bullets",
-                "div#feature-bullets ul",
-                "div#feature-bullets li",
-                "div#feature-bullets span",
-                "div#feature-bullets div"
-            ]
-            
-            for selector in feature_selectors:
-                feature_elem = soup.select_one(selector)
-                if feature_elem:
-                    features = [item.get_text(strip=True) for item in feature_elem.find_all('li')]
-                    break
-            
-            # Extract product specifications
-            specifications = {}
-            spec_selectors = [
-                "table#productOverview_feature_div",
-                "table#productDetails_techSpec_section_1",
-                "table#productDetails_detailBullets_sections1",
-                "table#productDetails_detailBullets_sections2",
-                "table#productDetails_detailBullets_sections3"
-            ]
-            
-            for selector in spec_selectors:
-                spec_table = soup.select_one(selector)
-                if spec_table:
-                    rows = spec_table.find_all('tr')
-                    for row in rows:
-                        cols = row.find_all(['th', 'td'])
-                        if len(cols) == 2:
-                            key = cols[0].get_text(strip=True)
-                            value = cols[1].get_text(strip=True)
-                            specifications[key] = value
-            
-            # Extract product rating
-            rating = None
-            rating_selectors = [
-                "span.a-icon-alt",
-                "div#averageCustomerReviews",
-                "div#averageCustomerReviews span",
-                "div#averageCustomerReviews i",
-                "div#averageCustomerReviews div"
-            ]
-            
-            for selector in rating_selectors:
-                rating_elem = soup.select_one(selector)
-                if rating_elem:
-                    rating = rating_elem.get_text(strip=True)
-                    break
-            
-            # Extract number of reviews
-            reviews_count = None
-            reviews_selectors = [
-                "span#acrCustomerReviewText",
-                "span#acrCustomerReviewText span",
-                "span#acrCustomerReviewText div",
-                "div#averageCustomerReviews span#acrCustomerReviewText"
-            ]
-            
-            for selector in reviews_selectors:
-                reviews_elem = soup.select_one(selector)
-                if reviews_elem:
-                    reviews_count = reviews_elem.get_text(strip=True)
-                    break
-            
             product_info = {
                 "Product Name": product_name or "N/A",
                 "Price": price or "N/A",
                 "Stock": stock or "N/A",
-                "Image URL": image_url,
-                "Description": description or "N/A",
-                "Features": features or [],
-                "Specifications": specifications or {},
-                "Rating": rating or "N/A",
-                "Reviews Count": reviews_count or "N/A"
+                "Image URL": image_url
             }
-            
-            if image_url:
-                try:
-                    image_response = session.get(image_url, headers=headers)
-                    img = Image.open(BytesIO(image_response.content))
-                    product_info["Image"] = "Image loaded successfully"
-                except Exception as e:
-                    product_info["Image"] = f"Failed to load image: {e}"
             
             return product_info
             
         except requests.RequestException as e:
-            retry_count += 1
-            if retry_count == max_retries:
-                print(f"Failed to fetch the webpage after {max_retries} attempts: {e}")
-                return {"error": "Failed to access Amazon. Please try again later."}
-            continue
+            print(f"Failed to fetch the webpage: {e}")
+            return {"error": "Failed to access Amazon. Please try again later."}
         except Exception as e:
             print(f"Unexpected error: {e}")
             return {"error": "An unexpected error occurred while scraping the product."}
@@ -372,6 +265,66 @@ def scrape():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "healthy"}), 200
+
+@app.route('/api/products', methods=['GET'])
+def get_products():
+    try:
+        # Get query parameters
+        category = request.args.get('category')
+        subcategory = request.args.get('subcategory')
+        brand = request.args.get('brand')
+        min_price = request.args.get('min_price', type=float)
+        max_price = request.args.get('max_price', type=float)
+        
+        # Filter products based on query parameters
+        filtered_products = dummy_products
+        
+        if category:
+            filtered_products = [p for p in filtered_products if p['category'] == category]
+        
+        if subcategory:
+            filtered_products = [p for p in filtered_products if p['subcategory'] == subcategory]
+        
+        if brand:
+            filtered_products = [p for p in filtered_products if p['brand'] == brand]
+        
+        if min_price is not None:
+            filtered_products = [p for p in filtered_products if p['current_price'] >= min_price]
+        
+        if max_price is not None:
+            filtered_products = [p for p in filtered_products if p['current_price'] <= max_price]
+        
+        return jsonify({
+            "total": len(filtered_products),
+            "products": filtered_products
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/products/categories', methods=['GET'])
+def get_categories():
+    try:
+        categories = {}
+        for product in dummy_products:
+            if product['category'] not in categories:
+                categories[product['category']] = set()
+            categories[product['category']].add(product['subcategory'])
+        
+        # Convert sets to lists for JSON serialization
+        categories = {k: list(v) for k, v in categories.items()}
+        return jsonify(categories)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/products/brands', methods=['GET'])
+def get_brands():
+    try:
+        brands = set()
+        for product in dummy_products:
+            brands.add(product['brand'])
+        return jsonify(list(brands))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # For local development
 if __name__ == '__main__':

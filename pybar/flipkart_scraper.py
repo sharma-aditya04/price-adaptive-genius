@@ -69,11 +69,10 @@ def scrape_flipkart_product(url):
     # Extract product name - Flipkart specific selectors
     product_name = None
     name_selectors = [
-        "span.B_NuCI",
-        "h1.yhB1nd",
-        "h1._2yAnYN",
-        "h1._2mXmZC",
-        "h1._3eAQiD",
+        "VU-ZEz",
+        "h1.VU-ZEz",
+        "span.VU-ZEz",
+        "div.VU-ZEz",
         "h1[class*='product-name']",
         "h1[class*='product-title']",
         "div[class*='product-name']",
@@ -91,11 +90,9 @@ def scrape_flipkart_product(url):
     # Extract price - Flipkart specific selectors
     price = None
     price_selectors = [
-        "div._30jeq3._16Jk6d",
-        "div._25b18c",
-        "div._16Jk6d",
-        "div._30jeq3",
-        "div._1vC4OE",
+        "Nx9bqj CxhGGd",
+        "div.Nx9bqj.CxhGGd",
+        "span.Nx9bqj.CxhGGd",
         "div[class*='price']",
         "span[class*='price']",
         "div[class*='product-price']",
@@ -113,11 +110,12 @@ def scrape_flipkart_product(url):
     # Extract stock availability - Flipkart specific selectors
     stock = None
     stock_selectors = [
-        "div._16FRp0",
-        "div._3nZ9FJ",
-        "div._3xgqrA",
-        "div._3nZ9FJ._3nZ9FJ",
-        "div._3nZ9FJ._3nZ9FJ._3nZ9FJ",
+        "_2MImiq",
+        "yiggsN O5Fpg8",
+        "div._2MImiq",
+        "div.yiggsN.O5Fpg8",
+        "span._2MImiq",
+        "span.yiggsN.O5Fpg8",
         "div[class*='stock']",
         "div[class*='availability']",
         "div[class*='delivery']",
@@ -134,11 +132,9 @@ def scrape_flipkart_product(url):
     # Extract product image - Flipkart specific selectors
     image_url = None
     image_selectors = [
-        "img._396cs4",
-        "img._2r_T1I",
-        "img._3kidJX",
-        "img._2QcLo-",
-        "img._396cs4._3exPp9",
+        "cPHDOP col-12-12",
+        "img.cPHDOP.col-12-12",
+        "div.cPHDOP.col-12-12 img",
         "img[class*='product-image']",
         "img[class*='product-img']",
         "img[class*='main-image']",
@@ -192,3 +188,11 @@ def scrape():
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001) 
+
+
+
+# name selector class = "VU-ZEz"
+# price selector class = "Nx9bqj CxhGGd"
+# stock selector class = "_2MImiq"
+# image selector class = "cPHDOP col-12-12"
+
