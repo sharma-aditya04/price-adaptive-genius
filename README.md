@@ -48,10 +48,6 @@ price-adaptive-genius/
 ├── database/               # Database related files
 │   └── schema.sql         # Database schema
 │
-├── docker/                # Docker configuration files
-│   ├── frontend/         # Frontend Docker setup
-│   └── backend/          # Backend Docker setup
-│
 └── README.md             # Project documentation
 ```
 
@@ -103,18 +99,13 @@ price-adaptive-genius/
 - Redis (for caching)
 
 ### DevOps
-- Docker
-- Docker Compose
 - GitHub Actions
-- AWS (for deployment)
 
 ## Build and Run Commands
 
 ### Prerequisites
 - Node.js (v14 or higher)
 - Python 3.8 or higher
-- Docker and Docker Compose
-- PostgreSQL
 
 ### Frontend Setup
 ```bash
@@ -150,15 +141,6 @@ pip install -r requirements.txt
 
 # Start Flask server
 python app.py
-```
-
-### Docker Setup
-```bash
-# Build and run all services
-docker-compose up --build
-
-# Stop all services
-docker-compose down
 ```
 
 ### Database Setup
