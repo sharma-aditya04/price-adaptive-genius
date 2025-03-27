@@ -1,69 +1,194 @@
-# Welcome to your Lovable project
+# Price Adaptive Genius
 
-## Project info
+A smart price tracking and comparison system that helps users find the best deals across multiple e-commerce platforms.
 
-**URL**: https://lovable.dev/projects/de1bf43b-62e1-4ec0-9906-fcb0ab393146
+## Team Status200
 
-## How can I edit this code?
+### Team Members
 
-There are several ways of editing your application.
+1. **Sumukh Bhende**
+   - Contact: +91 7030421835
+   - Email: sumukhsbhende@gmail.com
+   - Role: Frontend Developer & Web Scraping Collector
+   - Contribution: Developed the React frontend, implemented responsive design, created user interface components, and Scraped websites to collect live competitor market data.
 
-**Use Lovable**
+2. **Aditya Sharma**
+   - Contact: +91 8421057928
+   - Email: adityaks@gmail.com
+   - Role: Model Training & Database Specialist
+   - Contribution: Built the Flask backend, implemented web scraping functionality, designed database schema, and handled API integrations.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/de1bf43b-62e1-4ec0-9906-fcb0ab393146) and start prompting.
+3. **Sandhya Mourya**
+   - Contact: +91 8459291370
+   - Email: mouryasandhya25@gmail.com
+   - Role: Dataset Collection , Preprocessing and Presentation
+   - Contribution: Set up project infrastructure, collected dataset for model to train on and preparing for presentation
 
-Changes made via Lovable will be committed automatically to this repo.
+## Project Structure
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+price-adaptive-genius/
+├── frontend/                 # React frontend application
+│   ├── src/
+│   │   ├── components/      # Reusable React components
+│   │   ├── pages/          # Page components
+│   │   ├── services/       # API services
+│   │   ├── styles/         # CSS and styling files
+│   │   └── App.tsx         # Main application component
+│   ├── public/             # Static assets
+│   └── package.json        # Frontend dependencies
+│
+├── pybar/                   # Python backend services
+│   ├── app.py              # Main Flask application
+│   ├── amazon_scraper.py   # Amazon product scraper
+│   ├── flipkart_scraper.py # Flipkart product scraper
+│   ├── myntra_scraper.py   # Myntra product scraper
+│   └── ajio_scraper.py     # AJIO product scraper
+│
+├── database/               # Database related files
+│   └── schema.sql         # Database schema
+│
+├── docker/                # Docker configuration files
+│   ├── frontend/         # Frontend Docker setup
+│   └── backend/          # Backend Docker setup
+│
+└── README.md             # Project documentation
 ```
 
-**Edit a file directly in GitHub**
+## Problem Solving Approach
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. **Data Collection**
+   - Implemented robust web scrapers for multiple e-commerce platforms
+   - Used rotating headers and anti-bot measures to avoid detection
+   - Implemented rate limiting and error handling
+   - Added support for different page layouts and selectors
 
-**Use GitHub Codespaces**
+2. **Data Processing**
+   - Normalized data across different platforms
+   - Implemented price cleaning and formatting
+   - Added support for different currency formats
+   - Created unified data structure for all products
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. **User Interface**
+   - Designed responsive and modern UI
+   - Implemented real-time price updates
+   - Added product comparison features
+   - Created intuitive navigation and search
 
-## What technologies are used for this project?
+4. **Performance Optimization**
+   - Implemented caching for frequently accessed data
+   - Used lazy loading for images
+   - Optimized database queries
+   - Added request rate limiting
 
-This project is built with .
+## Tech Stack
 
-- Vite
+### Frontend
+- React.js
 - TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- Material-UI
+- Redux for state management
+- Axios for API calls
 
-## How can I deploy this project?
+### Backend
+- Python 3.8+
+- Flask
+- BeautifulSoup4
+- Requests
+- SQLAlchemy
+- Flask-CORS
 
-Simply open [Lovable](https://lovable.dev/projects/de1bf43b-62e1-4ec0-9906-fcb0ab393146) and click on Share -> Publish.
+### Database
+- PostgreSQL
+- Redis (for caching)
 
-## I want to use a custom domain - is that possible?
+### DevOps
+- Docker
+- Docker Compose
+- GitHub Actions
+- AWS (for deployment)
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## Build and Run Commands
+
+### Prerequisites
+- Node.js (v14 or higher)
+- Python 3.8 or higher
+- Docker and Docker Compose
+- PostgreSQL
+
+### Frontend Setup
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Build for production
+npm run build
+```
+
+### Backend Setup
+```bash
+# Navigate to pybar directory
+cd pybar
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows
+venv\Scripts\activate
+# On Unix or MacOS
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start Flask server
+python app.py
+```
+
+### Docker Setup
+```bash
+# Build and run all services
+docker-compose up --build
+
+# Stop all services
+docker-compose down
+```
+
+### Database Setup
+```bash
+# Create database
+createdb price_adaptive_genius
+
+# Run migrations
+flask db upgrade
+```
+
+## API Endpoints
+
+### Product Scraping
+- `POST /api/scrape/amazon` - Scrape Amazon product details
+- `POST /api/scrape/flipkart` - Scrape Flipkart product details
+- `POST /api/scrape/myntra` - Scrape Myntra product details
+- `POST /api/scrape/ajio` - Scrape AJIO product details
+
+### Product Management
+- `GET /api/products` - Get all products
+- `GET /api/products/:id` - Get product details
+- `POST /api/products` - Add new product
+- `PUT /api/products/:id` - Update product
+- `DELETE /api/products/:id` - Delete product
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
