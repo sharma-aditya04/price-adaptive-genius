@@ -102,163 +102,140 @@ def get_amazon_cookies(session):
         return None
 
 def scrape_amazon_product(url):
-    max_retries = 1  # Reduced retries for serverless
-    retry_count = 0
-    
-    while retry_count < max_retries:
-        try:
-            session = requests.Session()
-            
-            # Get cookies first
-            cookies = get_amazon_cookies(session)
-            if not cookies:
-                return {"error": "Failed to initialize session"}
-            
-            # Update session cookies
-            session.cookies.update(cookies)
-            
-            # Clean the URL by removing tracking parameters
-            clean_url = url.split('/ref=')[0].split('?')[0]
-            
-            # Make the product request
-            headers = get_random_headers()
-            response = session.get(clean_url, headers=headers, cookies=cookies)
-            response.raise_for_status()
-            
-            # Check for CAPTCHA or bot detection
-            if any(text in response.text.lower() for text in [
-                "sorry, we just need to make sure you're not a robot",
-                "enter the characters you see below",
-                "bot check",
-                "automatic bot",
-                "security check",
-                "captcha"
-            ]):
-                return {"error": "Amazon's anti-bot protection is active. Please try again later."}
-            
-            soup = BeautifulSoup(response.content, 'html.parser')
-            
-            # Extract product name - Amazon specific selectors
-            product_name = None
-            name_selectors = [
-                "h1.product-title",
-                "h1.product-title-word-break",
-                "h1.a-size-large",
-                "h1.a-size-large.product-title-word-break",
-                "h1.a-text-normal",
-                "h1.a-text-normal.product-title-word-break",
-                "h1[class*='product-title']",
-                "h1[class*='product-title-word-break']",
-                "h1[class*='a-size-large']",
-                "h1[class*='a-text-normal']"
-            ]
-            
-            for selector in name_selectors:
-                product_name = soup.select_one(selector)
-                if product_name:
-                    product_name = product_name.get_text(strip=True)
-                    break
-            
-            # Extract price - Amazon specific selectors
-            price = None
-            price_selectors = [
-                "span.a-price-whole",
-                "span.a-price",
-                "span.a-text-price",
-                "span.a-offscreen",
-                "span.a-price span.a-offscreen",
-                "div.a-price span.a-offscreen",
-                "div.a-price-whole",
-                "div.a-price span.a-text-price",
-                "div.a-price span.a-offscreen",
-                "div.a-price-whole span.a-offscreen"
-            ]
-            
-            for selector in price_selectors:
-                price_elem = soup.select_one(selector)
-                if price_elem:
-                    price = clean_price(price_elem.get_text())
-                    break
-            
-            # Extract stock availability - Amazon specific selectors
-            stock = None
-            stock_selectors = [
-                "div#availability",
-                "div#availability span",
-                "div#availability span.a-color-price",
-                "div#availability span.a-color-success",
-                "div#availability span.a-color-error",
-                "div#availability span.a-color-warning",
-                "div#availability span.a-text-bold",
-                "div#availability span.a-text-success",
-                "div#availability span.a-text-error",
-                "div#availability span.a-text-warning"
-            ]
-            
-            for selector in stock_selectors:
-                stock_elem = soup.select_one(selector)
-                if stock_elem:
-                    stock = stock_elem.get_text(strip=True)
-                    break
-            
-            # Extract product image - Amazon specific selectors
-            image_url = None
-            image_selectors = [
-                "img#landingImage",
-                "img#imgBlkFront",
-                "img#main-image",
-                "img#main-image-default",
-                "img#main-image-default-0",
-                "img#main-image-default-1",
-                "img#main-image-default-2",
-                "img#main-image-default-3",
-                "img#main-image-default-4",
-                "img#main-image-default-5"
-            ]
-            
-            for selector in image_selectors:
-                image_tag = soup.select_one(selector)
-                if image_tag and 'src' in image_tag.attrs:
-                    image_url = image_tag['src']
-                    if not image_url.startswith('http'):
-                        image_url = 'https:' + image_url
-                    break
-            
-            product_info = {
-                "Product Name": product_name or "N/A",
-                "Price": price or "N/A",
-                "Stock": stock or "N/A",
-                "Image URL": image_url
-            }
-            
-            return product_info
-            
-        except requests.RequestException as e:
-            print(f"Failed to fetch the webpage: {e}")
-            return {"error": "Failed to access Amazon. Please try again later."}
-        except Exception as e:
-            print(f"Unexpected error: {e}")
-            return {"error": "An unexpected error occurred while scraping the product."}
+    try:
+        # Add headers to mimic a browser request
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'max-age=0'
+        }
+
+        # Add a delay to avoid rate limiting
+        time.sleep(random.uniform(1, 3))
+
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Extract product details with more robust selectors
+        title = soup.select_one('#productTitle')
+        price = soup.select_one('.a-price-whole')
+        original_price = soup.select_one('.a-price.a-text-price .a-offscreen')
+        image = soup.select_one('#landingImage')
+        description = soup.select_one('#productDescription')
+        brand = soup.select_one('#bylineInfo')
+        category = soup.select_one('#wayfinding-breadcrumbs_container')
+        
+        # Clean and format the extracted data
+        product_data = {
+            'name': title.text.strip() if title else 'N/A',
+            'current_price': float(clean_price(price.text)) if price else 0.0,
+            'base_price': float(clean_price(original_price.text)) if original_price else 0.0,
+            'url': image.get('src') if image else '',
+            'description': description.text.strip() if description else 'N/A',
+            'brand': brand.text.strip().replace('Brand: ', '') if brand else 'N/A',
+            'category': extract_category(category.text.strip()) if category else 'Uncategorized',
+            'subcategory': extract_subcategory(category.text.strip()) if category else 'Uncategorized'
+        }
+        
+        return product_data
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching product: {str(e)}")
+        return None
+    except Exception as e:
+        print(f"Error processing product: {str(e)}")
+        return None
+
+def extract_category(breadcrumb_text):
+    try:
+        # Split the breadcrumb text and get the main category
+        categories = [cat.strip() for cat in breadcrumb_text.split('›')]
+        return categories[0] if categories else 'Uncategorized'
+    except:
+        return 'Uncategorized'
+
+def extract_subcategory(breadcrumb_text):
+    try:
+        # Split the breadcrumb text and get the subcategory
+        categories = [cat.strip() for cat in breadcrumb_text.split('›')]
+        return categories[1] if len(categories) > 1 else 'Uncategorized'
+    except:
+        return 'Uncategorized'
+
+def scrape_flipkart_product(url):
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'max-age=0'
+        }
+
+        time.sleep(random.uniform(1, 3))
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Flipkart specific selectors
+        title = soup.select_one('.B_NuCI')
+        price = soup.select_one('._30jeq3._16Jk6d')
+        original_price = soup.select_one('._3I9_wc._2p6lqe')
+        image = soup.select_one('._396cs4._2amPTt._3qGmMb')
+        description = soup.select_one('._1AN87F')
+        brand = soup.select_one('._2WkVRV')
+        category = soup.select_one('._2whKao')
+        
+        product_data = {
+            'name': title.text.strip() if title else 'N/A',
+            'current_price': float(clean_price(price.text)) if price else 0.0,
+            'base_price': float(clean_price(original_price.text)) if original_price else 0.0,
+            'url': image.get('src') if image else '',
+            'description': description.text.strip() if description else 'N/A',
+            'brand': brand.text.strip() if brand else 'N/A',
+            'category': extract_category(category.text.strip()) if category else 'Uncategorized',
+            'subcategory': extract_subcategory(category.text.strip()) if category else 'Uncategorized'
+        }
+        
+        return product_data
+    except Exception as e:
+        print(f"Error scraping Flipkart product: {str(e)}")
+        return None
 
 @app.route('/api/scrape', methods=['POST'])
-def scrape():
+def scrape_product():
     try:
         data = request.get_json()
-        if not data or 'url' not in data:
+        url = data.get('url', '').strip()
+        
+        if not url:
             return jsonify({"error": "URL is required"}), 400
+            
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+            
+        # Clean the URL by removing tracking parameters
+        clean_url = re.sub(r'[?&](ref_|tag_|linkCode|pd_rd_|pf_rd_|content-id|encoding).*?(?=[&]|$)', '', url)
         
-        url = data['url']
-        if not 'amazon.in' in url:
-            return jsonify({"error": "URL must be from amazon.in"}), 400
+        # Determine which scraper to use based on the URL
+        if 'amazon.in' in clean_url:
+            product_data = scrape_amazon_product(clean_url)
+        elif 'flipkart.com' in clean_url:
+            product_data = scrape_flipkart_product(clean_url)
+        else:
+            return jsonify({"error": "Only Amazon.in and Flipkart.com URLs are supported"}), 400
         
-        product_info = scrape_amazon_product(url)
-        if not product_info:
-            return jsonify({"error": "Failed to scrape the product"}), 500
+        if not product_data:
+            return jsonify({"error": "Failed to scrape product data"}), 500
+            
+        return jsonify(product_data), 200
         
-        if "error" in product_info:
-            return jsonify(product_info), 400
-        
-        return jsonify(product_info)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

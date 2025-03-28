@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Price Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Price Predictor</h1>
+        <form id="priceForm">
+            <label for="amazonUrl">Amazon URL:</label>
+            <input type="text" id="amazonUrl" name="amazonUrl" required>
+            <br>
+            <label for="flipkartUrl">Flipkart URL (optional):</label>
+            <input type="text" id="flipkartUrl" name="flipkartUrl">
+            <br>
+            <button type="submit">Get AI Price</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
